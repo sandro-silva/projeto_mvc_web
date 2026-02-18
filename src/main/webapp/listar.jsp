@@ -11,10 +11,24 @@
 <title>Lista de Usuários</title>
 
 <style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+    }
+
+    .topo {
+        width: 90%;
+        margin: 20px auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
     table {
         border-collapse: collapse;
         width: 90%;
         margin: auto;
+        background: white;
     }
 
     th, td {
@@ -42,6 +56,15 @@
     a:hover {
         background: #0056b3;
     }
+
+    .buscar input {
+        padding: 6px;
+        width: 220px;
+    }
+
+    .buscar button {
+        padding: 6px 10px;
+    }
 </style>
 </head>
 
@@ -49,6 +72,36 @@
 
 <h2>📋 Lista de Usuários</h2>
 
+<!-- ÁREA SUPERIOR -->
+<div class="topo">
+
+    <!-- BUSCA -->
+    <div class="buscar">
+        <form action="usuario" method="get">
+
+            <input type="text"
+                   name="busca"
+                   placeholder="Buscar por nome..."
+                   value="<%= request.getAttribute("busca") != null
+                           ? request.getAttribute("busca")
+                           : "" %>">
+
+            <button type="submit">🔍 Buscar</button>
+
+            <a href="usuario" style="margin-left:10px;">Limpar</a>
+
+        </form>
+    </div>
+
+    <!-- VOLTAR -->
+    <div>
+        <a href="index.jsp">⬅ Dashboard</a>
+    </div>
+
+</div>
+
+
+<!-- TABELA -->
 <table>
     <tr>
         <th>ID</th>
@@ -60,8 +113,8 @@
     </tr>
 
 <%
-    // Recebe a lista enviada pelo Servlet
-    List<Usuario> lista = (List<Usuario>) request.getAttribute("listaUsuarios");
+    List<Usuario> lista =
+        (List<Usuario>) request.getAttribute("listaUsuarios");
 
     if (lista != null && !lista.isEmpty()) {
 
@@ -92,7 +145,7 @@
 %>
 
     <tr>
-        <td colspan="6">Nenhum usuário cadastrado.</td>
+        <td colspan="6">Nenhum usuário encontrado.</td>
     </tr>
 
 <%
@@ -100,12 +153,6 @@
 %>
 
 </table>
-
-<br>
-
-<div style="text-align:center;">
-    <a href="index.jsp">⬅ Voltar</a>
-</div>
 
 </body>
 </html>
