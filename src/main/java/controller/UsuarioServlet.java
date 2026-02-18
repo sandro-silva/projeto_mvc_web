@@ -36,9 +36,7 @@ public class UsuarioServlet extends HttpServlet {
             ====================== */
             if ("deletar".equals(acao)) {
 
-                Long id = Long.parseLong(
-                    req.getParameter("id")
-                );
+                Long id = Long.parseLong(req.getParameter("id"));
 
                 dao.deletar(id);
 
@@ -51,13 +49,11 @@ public class UsuarioServlet extends HttpServlet {
             ====================== */
             if ("editar".equals(acao)) {
 
-                Long id = Long.parseLong(
-                    req.getParameter("id")
-                );
+                Long id = Long.parseLong(req.getParameter("id"));
 
-                Usuario u = dao.buscarPorId(id);
+                Usuario usuario = dao.buscarPorId(id);
 
-                req.setAttribute("usuario", u);
+                req.setAttribute("usuario", usuario);
 
                 req.getRequestDispatcher("form.jsp")
                    .forward(req, resp);
@@ -75,14 +71,14 @@ public class UsuarioServlet extends HttpServlet {
 
             if (busca != null && !busca.trim().isEmpty()) {
 
-                // BUSCA POR NOME
+                busca = busca.trim(); // remove espaços extras
+
                 lista = dao.buscarPorNome(busca);
 
                 req.setAttribute("busca", busca);
 
             } else {
 
-                // LISTA TODOS
                 lista = dao.listar();
             }
 
@@ -113,34 +109,34 @@ public class UsuarioServlet extends HttpServlet {
 
         try {
 
-            Usuario u = new Usuario();
+            Usuario usuario = new Usuario();
 
             String id = req.getParameter("id");
 
             if (id != null && !id.isEmpty()) {
-                u.setId(Long.parseLong(id));
+                usuario.setId(Long.parseLong(id));
             }
 
-            u.setNome(req.getParameter("nome"));
+            usuario.setNome(req.getParameter("nome"));
 
-            u.setQuantidadeHoras(
+            usuario.setQuantidadeHoras(
                 Integer.parseInt(req.getParameter("horas"))
             );
 
-            u.setParticipou(
+            usuario.setParticipou(
                 req.getParameter("participou") != null
             );
 
-            u.setObservacao(req.getParameter("obs"));
+            usuario.setObservacao(req.getParameter("obs"));
 
-            // ATUALIZA OU SALVA
-            if (u.getId() != null) {
+            // Atualiza ou salva
+            if (usuario.getId() != null) {
 
-                dao.atualizar(u);
+                dao.atualizar(usuario);
 
             } else {
 
-                dao.salvar(u);
+                dao.salvar(usuario);
             }
 
             resp.sendRedirect("usuario");
