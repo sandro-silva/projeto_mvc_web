@@ -68,6 +68,81 @@ public class UsuarioDAO {
 
         return lista;
     }
+    
+    /* ================= BUSCAR POR NOME ================= */
+    public List<Usuario> buscarPorNome(String nome) {
+
+        List<Usuario> lista = new ArrayList<>();
+
+        String sql =
+            "SELECT * FROM usuarios " +
+            "WHERE nome ILIKE ? " +
+            "ORDER BY id";
+
+        try (
+            Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+
+            ps.setString(1, "%" + nome + "%");
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                Usuario u = new Usuario();
+
+                u.setId(rs.getLong("id"));
+                u.setNome(rs.getString("nome"));
+                u.setQuantidadeHoras(rs.getInt("quantidade_horas"));
+                u.setParticipou(rs.getBoolean("participou"));
+                u.setObservacao(rs.getString("observacao"));
+
+                lista.add(u);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao buscar usuários", e);
+        }
+
+        return lista;
+    }
+    
+    /* ================= BUSCAR POR ID (EXTRA) ================= */
+    public Usuario buscarPorId(Long id) {
+
+        String sql = "SELECT * FROM usuarios WHERE id = ?";
+
+        Usuario usuario = null;
+
+        try (
+            Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+
+            ps.setLong(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                usuario = new Usuario();
+
+                usuario.setId(rs.getLong("id"));
+                usuario.setNome(rs.getString("nome"));
+                usuario.setQuantidadeHoras(rs.getInt("quantidade_horas"));
+                usuario.setParticipou(rs.getBoolean("participou"));
+                usuario.setObservacao(rs.getString("observacao"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao buscar usuário", e);
+        }
+
+        return usuario;
+    }
 
 
     /* ================= UPDATE ================= */
@@ -121,40 +196,5 @@ public class UsuarioDAO {
         }
     }
 
-
-    /* ================= BUSCAR POR ID (EXTRA) ================= */
-    public Usuario buscarPorId(Long id) {
-
-        String sql = "SELECT * FROM usuarios WHERE id = ?";
-
-        Usuario usuario = null;
-
-        try (
-            Connection conn = Conexao.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql)
-        ) {
-
-            ps.setLong(1, id);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-
-                usuario = new Usuario();
-
-                usuario.setId(rs.getLong("id"));
-                usuario.setNome(rs.getString("nome"));
-                usuario.setQuantidadeHoras(rs.getInt("quantidade_horas"));
-                usuario.setParticipou(rs.getBoolean("participou"));
-                usuario.setObservacao(rs.getString("observacao"));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Erro ao buscar usuário", e);
-        }
-
-        return usuario;
-    }
 }
 
