@@ -65,6 +65,16 @@
     .buscar button {
         padding: 6px 10px;
     }
+
+    .info-busca {
+        width: 90%;
+        margin: 15px auto;
+        padding: 12px;
+        background: #e9f5ff;
+        border-left: 5px solid #007bff;
+        font-size: 15px;
+        border-radius: 4px;
+    }
 </style>
 </head>
 
@@ -95,11 +105,22 @@
 
     <!-- VOLTAR -->
     <div>
-        <a href="index.jsp">⬅ Dashboard</a>
+        <a href="dashboard">⬅ Dashboard</a>
     </div>
 
 </div>
 
+<%
+    String busca = (String) request.getAttribute("busca");
+    if (busca != null && !busca.isEmpty()) {
+%>
+    <div class="info-busca">
+        🔎 Exibindo resultados para:
+        <strong><%= busca %></strong>
+    </div>
+<%
+    }
+%>
 
 <!-- TABELA -->
 <table>
