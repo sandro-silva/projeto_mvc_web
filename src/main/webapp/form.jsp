@@ -58,8 +58,7 @@
     a {
         display: block;
         margin-top: 15px;
-        text-align: center;
-    }   
+        text-align: center; 
     
 }
     
@@ -89,14 +88,14 @@
     <input type="number" name="horas" required
            value="<%= editando ? u.getQuantidadeHoras() : "" %>">
 
-    <label>Participou:</label>
-    	<input type="checkbox" name="participou"
- 		<%= (u != null && u.isParticipou()) ? "checked" : "" %>>
-
+  	<label>
+    <input type="checkbox" name="participou"
+        <%= (editando && u.isParticipou()) ? "checked" : "" %>>
+    	Participou
+	</label>
 
 	<label>Observação:</label>
-	<textarea name="obs"></textarea>
-
+	<textarea name="obs"><%= editando ? u.getObservacao() : "" %></textarea>
 
     <button type="submit">
         <%= editando ? "Atualizar" : "Salvar" %>
