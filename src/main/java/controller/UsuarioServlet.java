@@ -18,21 +18,74 @@ public class UsuarioServlet extends HttpServlet {
     private UsuarioDAO dao = new UsuarioDAO();
 
     // ======================
-    // LISTAR
+    // GET → LISTAR / BUSCAR / EDITAR / DELETAR
     // ======================
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        // Charset
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html;charset=UTF-8");
 
+        String acao = req.getParameter("acao");
+
         try {
 
-            List<Usuario> lista = dao.listar();
+            /* ======================
+               DELETAR
+            ====================== */
+            if ("deletar".equals(acao)) {
 
-            // Envia para o JSP
+                Long id = Long.parseLong(
+                    req.getParameter("id")
+                );
+
+                dao.deletar(id);
+
+                resp.sendRedirect("usuario");
+                return;
+            }
+
+            /* ======================
+               EDITAR
+            ====================== */
+            if ("editar".equals(acao)) {
+
+                Long id = Long.parseLong(
+                    req.getParameter("id")
+                );
+
+                Usuario u = dao.buscarPorId(id);
+
+                req.setAttribute("usuario", u);
+
+                req.getRequestDispatcher("form.jsp")
+                   .forward(req, resp);
+
+                return;
+            }
+
+            /* ======================
+               LISTAR / BUSCAR
+            ====================== */
+
+            String busca = req.getParameter("busca");
+
+            List<Usuario> lista;
+
+            if (busca != null && !busca.trim().isEmpty()) {
+
+                // BUSCA POR NOME
+                lista = dao.buscarPorNome(busca);
+
+                req.setAttribute("busca", busca);
+
+            } else {
+
+                // LISTA TODOS
+                lista = dao.listar();
+            }
+
             req.setAttribute("listaUsuarios", lista);
 
             req.getRequestDispatcher("listar.jsp")
@@ -44,13 +97,13 @@ public class UsuarioServlet extends HttpServlet {
 
             resp.sendError(
                 HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                "Erro ao listar usuários"
+                "Erro no sistema"
             );
         }
     }
 
     // ======================
-    // CADASTRAR
+    // POST → SALVAR / ATUALIZAR
     // ======================
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -61,6 +114,12 @@ public class UsuarioServlet extends HttpServlet {
         try {
 
             Usuario u = new Usuario();
+
+            String id = req.getParameter("id");
+
+            if (id != null && !id.isEmpty()) {
+                u.setId(Long.parseLong(id));
+            }
 
             u.setNome(req.getParameter("nome"));
 
@@ -74,9 +133,16 @@ public class UsuarioServlet extends HttpServlet {
 
             u.setObservacao(req.getParameter("obs"));
 
-            dao.salvar(u);
+            // ATUALIZA OU SALVA
+            if (u.getId() != null) {
 
-            // Volta para listar
+                dao.atualizar(u);
+
+            } else {
+
+                dao.salvar(u);
+            }
+
             resp.sendRedirect("usuario");
 
         } catch (Exception e) {
