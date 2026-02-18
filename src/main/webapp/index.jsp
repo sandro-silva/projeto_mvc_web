@@ -116,6 +116,21 @@
             <p>Informações do sistema</p>
             <a href="#">Detalhes</a>
         </div>
+        
+        <!-- TOTAL DE USUÁRIOS -->
+		<div class="card">
+		    <h3>👥 Total de Usuários</h3>
+		
+		    <p style="font-size:28px; font-weight:bold; color:#007bff;">
+		        <%= request.getAttribute("totalUsuarios") != null
+		              ? request.getAttribute("totalUsuarios")
+		              : "0" %>
+		    </p>
+		
+		    <p>Cadastrados no sistema</p>
+		
+		    <a href="usuario">Ver lista</a>
+		</div>
 
     </div>
 
