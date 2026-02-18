@@ -195,6 +195,29 @@ public class UsuarioDAO {
             throw new RuntimeException("Erro ao deletar usuário", e);
         }
     }
+    
+    /* ================= CONTAR USUÁRIOS ================= */
+    public int contarUsuarios() {
+
+        String sql = "SELECT COUNT(*) FROM usuarios";
+
+        try (
+            Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()
+        ) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao contar usuários", e);
+        }
+
+        return 0;
+    }
 
 }
 
