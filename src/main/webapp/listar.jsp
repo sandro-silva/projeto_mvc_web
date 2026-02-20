@@ -1,13 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ page import="java.util.List" %>
 <%@ page import="model.Usuario" %>
 
-<%
-    // 🔐 Recupera perfil da sessão
-    String perfil = (String) session.getAttribute("perfil");
-%>
+<%@ include file="header.jsp" %>
 
 <!DOCTYPE html>
 <html>
@@ -92,10 +88,8 @@
 
 <h2>📋 Lista de Usuários</h2>
 
-<!-- ÁREA SUPERIOR -->
 <div class="topo">
 
-    <!-- BUSCA -->
     <div class="buscar">
         <form action="usuario" method="get">
 
@@ -113,7 +107,6 @@
         </form>
     </div>
 
-    <!-- VOLTAR -->
     <div>
         <a href="dashboard">⬅ Dashboard</a>
     </div>
@@ -132,7 +125,6 @@
     }
 %>
 
-<!-- TABELA -->
 <table>
     <tr>
         <th>ID</th>
@@ -160,7 +152,6 @@
         <td><%= u.getObservacao() %></td>
 
         <td>
-
             <% if ("ADMIN".equals(perfil)) { %>
 
                 <a href="usuario?acao=editar&id=<%=u.getId()%>">Editar</a>
@@ -175,7 +166,6 @@
                 <span class="sem-permissao">🔒 Sem permissão</span>
 
             <% } %>
-
         </td>
     </tr>
 
