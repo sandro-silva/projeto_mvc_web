@@ -27,7 +27,7 @@ public class LoginServlet extends HttpServlet {
     }
 
     // ======================
-    // AUTENTICAR
+    // AUTENTICAR USUÁRIO
     // ======================
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -40,28 +40,30 @@ public class LoginServlet extends HttpServlet {
 
         if (usuario != null) {
 
-            // 🔐 Segurança: invalida sessão anterior
+            // 🔐 Invalida sessão antiga (segurança)
             HttpSession sessionAntiga = req.getSession(false);
             if (sessionAntiga != null) {
                 sessionAntiga.invalidate();
             }
 
-            // Cria nova sessão
+            // 🆕 Cria nova sessão
             HttpSession session = req.getSession(true);
 
-            // Salva usuário completo
+            // 👤 Salva objeto completo do usuário
             session.setAttribute("usuarioLogado", usuario);
 
             // 🔑 Salva perfil separadamente (IMPORTANTE)
             session.setAttribute("perfil", usuario.getPerfil());
 
-            // Tempo de expiração (30 minutos)
+            // ⏳ Expiração da sessão (30 minutos)
             session.setMaxInactiveInterval(30 * 60);
 
+            // 🚀 Redireciona para dashboard
             resp.sendRedirect("dashboard");
 
         } else {
 
+            // ❌ Login inválido
             resp.sendRedirect("login?erro=true");
         }
     }
