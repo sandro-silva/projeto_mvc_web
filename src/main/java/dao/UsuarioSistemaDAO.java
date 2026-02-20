@@ -24,9 +24,11 @@ public class UsuarioSistemaDAO {
             if (rs.next()) {
 
                 UsuarioSistema u = new UsuarioSistema();
+
                 u.setId(rs.getLong("id"));
                 u.setLogin(rs.getString("login"));
                 u.setSenha(rs.getString("senha"));
+                u.setPerfil(rs.getString("perfil"));
 
                 return u;
             }
