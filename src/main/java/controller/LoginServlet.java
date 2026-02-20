@@ -15,6 +15,9 @@ public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private UsuarioSistemaDAO dao = new UsuarioSistemaDAO();
 
+    // ======================
+    // EXIBIR LOGIN
+    // ======================
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -23,6 +26,9 @@ public class LoginServlet extends HttpServlet {
            .forward(req, resp);
     }
 
+    // ======================
+    // AUTENTICAR
+    // ======================
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
@@ -34,8 +40,23 @@ public class LoginServlet extends HttpServlet {
 
         if (usuario != null) {
 
-            HttpSession session = req.getSession();
+            // 🔐 Segurança: invalida sessão anterior
+            HttpSession sessionAntiga = req.getSession(false);
+            if (sessionAntiga != null) {
+                sessionAntiga.invalidate();
+            }
+
+            // Cria nova sessão
+            HttpSession session = req.getSession(true);
+
+            // Salva usuário completo
             session.setAttribute("usuarioLogado", usuario);
+
+            // 🔑 Salva perfil separadamente (IMPORTANTE)
+            session.setAttribute("perfil", usuario.getPerfil());
+
+            // Tempo de expiração (30 minutos)
+            session.setMaxInactiveInterval(30 * 60);
 
             resp.sendRedirect("dashboard");
 
@@ -45,4 +66,3 @@ public class LoginServlet extends HttpServlet {
         }
     }
 }
-
