@@ -4,6 +4,11 @@
 <%@ page import="java.util.List" %>
 <%@ page import="model.Usuario" %>
 
+<%
+    // 🔐 Recupera perfil da sessão
+    String perfil = (String) session.getAttribute("perfil");
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -74,6 +79,11 @@
         border-left: 5px solid #007bff;
         font-size: 15px;
         border-radius: 4px;
+    }
+
+    .sem-permissao {
+        color: #999;
+        font-size: 14px;
     }
 </style>
 </head>
@@ -150,12 +160,22 @@
         <td><%= u.getObservacao() %></td>
 
         <td>
-            <a href="usuario?acao=editar&id=<%=u.getId()%>">Editar</a>
-            |
-            <a href="usuario?acao=deletar&id=<%=u.getId()%>"
-               onclick="return confirm('Deseja excluir?')">
-               Excluir
-            </a>
+
+            <% if ("ADMIN".equals(perfil)) { %>
+
+                <a href="usuario?acao=editar&id=<%=u.getId()%>">Editar</a>
+                |
+                <a href="usuario?acao=deletar&id=<%=u.getId()%>"
+                   onclick="return confirm('Deseja excluir?')">
+                   Excluir
+                </a>
+
+            <% } else { %>
+
+                <span class="sem-permissao">🔒 Sem permissão</span>
+
+            <% } %>
+
         </td>
     </tr>
 
