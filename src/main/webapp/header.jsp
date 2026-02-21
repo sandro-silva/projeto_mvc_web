@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="model.UsuarioSistema" %>
 
 <%
@@ -41,12 +42,32 @@
         color: #00e5ff; /* azul ciano mais vibrante */
         font-weight: bold;
     }
+    
+    /* ===== Badge estilo Bootstrap ===== */
+    .badge {
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-left: 10px;
+        letter-spacing: 0.5px;
+    }
+
+    .badge-admin {
+        background-color: #dc3545; /* Bootstrap danger */
+        color: white;
+    }
+
+    .badge-user {
+        background-color: #198754; /* Bootstrap success */
+        color: white;
+    }
 </style>
 
 <div class="top-header">
 
     <div>
-        Sistema MVC
+        <strong>Sistema MVC</strong>
     </div>
 
     <div>
@@ -54,13 +75,11 @@
 
             <strong><%= usuario.getLogin() %></strong>
 
-            <span class="perfil-badge">
-                <% if ("ADMIN".equals(perfil)) { %>
-                    <span class="admin"><%= perfil %></span>
-                <% } else { %>
-                    <span class="usuario"><%= perfil %></span>
-                <% } %>
-            </span>
+            <% if ("ADMIN".equals(perfil)) { %>
+                <span class="badge badge-admin">ADMIN</span>
+            <% } else { %>
+                <span class="badge badge-user">USUÁRIO</span>
+            <% } %>
 
             <a href="logout">Sair</a>
 
