@@ -2,6 +2,7 @@ package dao;
 
 import model.UsuarioSistema;
 import util.Conexao;
+import model.Perfil;
 
 import java.sql.*;
 
@@ -28,7 +29,7 @@ public class UsuarioSistemaDAO {
                 u.setId(rs.getLong("id"));
                 u.setLogin(rs.getString("login"));
                 u.setSenha(rs.getString("senha"));
-                u.setPerfil(rs.getString("perfil"));
+                u.setPerfil(Perfil.valueOf(rs.getString("perfil")));
 
                 return u;
             }
