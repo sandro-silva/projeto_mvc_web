@@ -1,11 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="model.UsuarioSistema" %>
+<%@ page import="model.Perfil" %>
 
 <%
     UsuarioSistema usuario =
         (UsuarioSistema) session.getAttribute("usuarioLogado");
 
-    String perfil = (String) session.getAttribute("perfil");
+	Perfil perfil = (Perfil) session.getAttribute("perfil");
 %>
 
 <style>
@@ -75,7 +76,7 @@
 
             <strong><%= usuario.getLogin() %></strong>
 
-            <% if ("ADMIN".equals(perfil)) { %>
+           <% if (perfil == Perfil.ADMIN) { %>
                 <span class="badge badge-admin">ADMIN</span>
             <% } else { %>
                 <span class="badge badge-user">USUÁRIO</span>
