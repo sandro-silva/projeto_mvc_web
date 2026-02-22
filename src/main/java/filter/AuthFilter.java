@@ -1,5 +1,7 @@
 package filter;
 
+import model.Perfil;
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.*;
@@ -20,8 +22,11 @@ public class AuthFilter implements Filter {
 
         String uri = req.getRequestURI();
 
-        // Páginas públicas
-        if (uri.contains("login") || uri.contains("css") || uri.contains("js")) {
+        // 🔓 Páginas públicas
+        if (uri.contains("login") ||
+            uri.contains("css") ||
+            uri.contains("js")) {
+
             chain.doFilter(request, response);
             return;
         }
@@ -35,10 +40,13 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        String perfil = (String) session.getAttribute("perfil");
+        Perfil perfil =
+            (Perfil) session.getAttribute("perfil");
 
         // 🔒 Apenas ADMIN pode acessar /usuario
-        if (uri.contains("/usuario") && !"ADMIN".equals(perfil)) {
+        if (uri.contains("/usuario") &&
+            perfil != Perfil.ADMIN) {
+
             resp.sendRedirect("dashboard");
             return;
         }
@@ -46,4 +54,3 @@ public class AuthFilter implements Filter {
         chain.doFilter(request, response);
     }
 }
-
