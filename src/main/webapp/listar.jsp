@@ -2,7 +2,7 @@
 
 <%@ page import="java.util.List" %>
 <%@ page import="model.Usuario" %>
-
+<%@ page import="model.Perfil" %>
 <%@ include file="header.jsp" %>
 
 <!DOCTYPE html>
@@ -152,7 +152,7 @@
         <td><%= u.getObservacao() %></td>
 
         <td>
-            <% if ("ADMIN".equals(perfil)) { %>
+            <% if (perfil == Perfil.ADMIN) { %>
 
                 <a href="usuario?acao=editar&id=<%=u.getId()%>">Editar</a>
                 |
