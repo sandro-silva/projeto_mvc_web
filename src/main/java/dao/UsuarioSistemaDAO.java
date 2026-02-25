@@ -11,7 +11,7 @@ public class UsuarioSistemaDAO {
     public UsuarioSistema autenticar(String login, String senha) {
 
         String sql = "SELECT * FROM usuarios_sistema WHERE login = ? AND senha = ?";
-
+    	
         try (
             Connection conn = Conexao.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)
