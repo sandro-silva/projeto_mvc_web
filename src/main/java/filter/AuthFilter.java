@@ -43,8 +43,16 @@ public class AuthFilter implements Filter {
         Perfil perfil =
             (Perfil) session.getAttribute("perfil");
 
-        // 🔒 Apenas ADMIN pode acessar /usuario
+        // 🔒 Apenas ADMIN pode acessar /usuarios
         if (uri.contains("/usuario") &&
+            perfil != Perfil.ADMIN) {
+
+            resp.sendRedirect("dashboard");
+            return;
+        }
+        
+        // 🔒 Apenas ADMIN pode acessar /relatorios
+        if (uri.contains("/relatorios") &&
             perfil != Perfil.ADMIN) {
 
             resp.sendRedirect("dashboard");
