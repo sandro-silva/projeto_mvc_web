@@ -107,8 +107,10 @@
         <!-- Relatórios (futuro) -->
         <div class="card">
             <h3>📈 Relatórios</h3>
-            <p>Estatísticas do sistema (em breve)</p>
-            <a href="#">Em breve</a>
+            <p>Estatísticas do sistema</p>
+    		<a href="${pageContext.request.contextPath}/relatorios">
+        		Abrir
+        	</a>
         </div>
 
         <!-- Sobre -->
