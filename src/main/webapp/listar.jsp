@@ -129,7 +129,7 @@
     <tr>
         <th>ID</th>
         <th>Nome</th>
-        <th>Horas</th>
+        <th>CPF</th>
         <th>Participou</th>
         <th>Observação</th>
         <th>Ações</th>
@@ -147,7 +147,7 @@
     <tr>
         <td><%= u.getId() %></td>
         <td><%= u.getNome() %></td>
-        <td><%= u.getQuantidadeHoras() %></td>
+        <td><%= u.getCpf() %></td>
         <td><%= u.isParticipou() ? "SIM" : "NÃO" %></td>
         <td><%= u.getObservacao() %></td>
 
