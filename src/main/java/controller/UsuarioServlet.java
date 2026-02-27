@@ -119,8 +119,7 @@ public class UsuarioServlet extends HttpServlet {
 
             usuario.setNome(req.getParameter("nome"));
 
-            usuario.setQuantidadeHoras(
-                Integer.parseInt(req.getParameter("horas"))
+            usuario.setCpf(req.getParameter("cpf")
             );
 
             usuario.setParticipou(
