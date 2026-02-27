@@ -86,9 +86,9 @@
            value="<%= editando ? u.getNome() : "" %>">
 
 
-    <label>Horas:</label>
-    <input type="number" name="horas" required
-           value="<%= editando ? u.getQuantidadeHoras() : "" %>">
+    <label>CPF:</label>
+    <input type="text" name="cpf" required
+           value="<%= editando ? u.getCpf() : "" %>">
 
   	<label>
     <input type="checkbox" name="participou"
