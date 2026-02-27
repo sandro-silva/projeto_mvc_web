@@ -3,7 +3,7 @@ package model;
 public class Usuario {
 	private Long id;
 	private String nome;
-	private int quantidadeHoras;
+	private String cpf;
 	private boolean participou;
 	private String observacao;
 	
@@ -19,11 +19,11 @@ public class Usuario {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public int getQuantidadeHoras() {
-		return quantidadeHoras;
+	public String getCpf() {
+		return cpf;
 	}
-	public void setQuantidadeHoras(int quantidadeHoras) {
-		this.quantidadeHoras = quantidadeHoras;
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
 	}
 	public boolean isParticipou() {
 		return participou;
