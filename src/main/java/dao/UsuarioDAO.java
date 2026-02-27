@@ -12,7 +12,7 @@ public class UsuarioDAO {
     public void salvar(Usuario u) {
 
         String sql = "INSERT INTO usuarios " +
-                     "(nome, quantidade_horas, participou, observacao) " +
+                     "(nome, cpf, participou, observacao) " +
                      "VALUES (?, ?, ?, ?)";
 
         try (
@@ -21,7 +21,7 @@ public class UsuarioDAO {
         ) {
 
             ps.setString(1, u.getNome());
-            ps.setInt(2, u.getQuantidadeHoras());
+            ps.setString(2, u.getCpf());
             ps.setBoolean(3, u.isParticipou());
             ps.setString(4, u.getObservacao());
 
@@ -53,7 +53,7 @@ public class UsuarioDAO {
 
                 u.setId(rs.getLong("id"));
                 u.setNome(rs.getString("nome"));
-                u.setQuantidadeHoras(rs.getInt("quantidade_horas"));
+                u.setCpf(rs.getString("cpf"));
                 u.setParticipou(rs.getBoolean("participou"));
                 u.setObservacao(rs.getString("observacao"));
 
@@ -93,7 +93,7 @@ public class UsuarioDAO {
 
                 u.setId(rs.getLong("id"));
                 u.setNome(rs.getString("nome"));
-                u.setQuantidadeHoras(rs.getInt("quantidade_horas"));
+                u.setCpf(rs.getString("cpf"));
                 u.setParticipou(rs.getBoolean("participou"));
                 u.setObservacao(rs.getString("observacao"));
 
@@ -130,7 +130,7 @@ public class UsuarioDAO {
 
                 usuario.setId(rs.getLong("id"));
                 usuario.setNome(rs.getString("nome"));
-                usuario.setQuantidadeHoras(rs.getInt("quantidade_horas"));
+                usuario.setCpf(rs.getString("cpf"));
                 usuario.setParticipou(rs.getBoolean("participou"));
                 usuario.setObservacao(rs.getString("observacao"));
             }
@@ -150,7 +150,7 @@ public class UsuarioDAO {
         String sql =
             "UPDATE usuarios SET " +
             "nome = ?, " +
-            "quantidade_horas = ?, " +
+            "cpf = ?, " +
             "participou = ?, " +
             "observacao = ? " +
             "WHERE id = ?";
@@ -161,7 +161,7 @@ public class UsuarioDAO {
         ) {
 
             ps.setString(1, u.getNome());
-            ps.setInt(2, u.getQuantidadeHoras());
+            ps.setString(2, u.getCpf());
             ps.setBoolean(3, u.isParticipou());
             ps.setString(4, u.getObservacao());
             ps.setLong(5, u.getId());
