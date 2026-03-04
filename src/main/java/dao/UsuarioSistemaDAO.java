@@ -5,14 +5,17 @@ import util.Conexao;
 import model.Perfil;
 
 import java.sql.*;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.HashMap;
 
 public class UsuarioSistemaDAO {
 
     public UsuarioSistema autenticar(String login, String senha) {
 
-        String sql = "SELECT * FROM usuarios_sistema WHERE login = ? AND senha = ?";
+        String sql = "SELECT us.id, us.login, us.senha, p.nome AS perfil " +
+        	    "FROM usuarios_sistema us " +
+        	    "JOIN perfis p ON p.id = us.perfil_id " +
+        	    "WHERE us.login = ? AND us.senha = ?";
 
         try (
             Connection conn = Conexao.getConnection();
@@ -43,30 +46,35 @@ public class UsuarioSistemaDAO {
         return null;
     }
 
-    // 🔥 NOVO MÉTODO
+    // 🔥 MÉTODO Contar por perfil
     public Map<String, Integer> contarPorPerfil() {
 
-        Map<String, Integer> mapa = new HashMap<>();
+        Map<String, Integer> mapa = new LinkedHashMap<>();
 
-        String sql = """
-            SELECT perfil, COUNT(*) 
-            FROM usuarios_sistema
-            GROUP BY perfil
-        """;
+        String sql =
+            "SELECT p.nome AS perfil, COUNT(u.id) AS total " +
+            "FROM usuarios u " +
+            "JOIN usuarios_sistema us ON u.usuario_sistema_id = us.id " +
+            "JOIN perfis p ON us.perfil_id = p.id " +
+            "GROUP BY p.nome " +
+            "ORDER BY p.nome";
 
-        try (Connection conn = Conexao.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (
+            Connection conn = Conexao.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()
+        ) {
 
             while (rs.next()) {
                 mapa.put(
-                    rs.getString(1),
-                    rs.getInt(2)
+                    rs.getString("perfil"),
+                    rs.getInt("total")
                 );
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException("Erro ao gerar relatório", e);
         }
 
         return mapa;
