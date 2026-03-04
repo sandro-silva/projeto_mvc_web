@@ -2,6 +2,8 @@ package controller;
 
 import dao.UsuarioDAO;
 import model.Usuario;
+import model.UsuarioSistema;
+import model.Perfil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,16 +29,46 @@ public class UsuarioServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html;charset=UTF-8");
 
-        String acao = req.getParameter("acao");
-
         try {
 
+            HttpSession session = req.getSession(false);
+
+            if (session == null) {
+                resp.sendRedirect("login.jsp");
+                return;
+            }
+
+            UsuarioSistema usuarioLogado =
+                    (UsuarioSistema) session.getAttribute("usuarioLogado");
+
+            Long usuarioSistemaId = usuarioLogado.getId();
+            Perfil perfil = usuarioLogado.getPerfil();
+
+            String acao = req.getParameter("acao");
+
             /* ======================
-               DELETAR
+               DELETAR (SEGURO)
             ====================== */
             if ("deletar".equals(acao)) {
 
                 Long id = Long.parseLong(req.getParameter("id"));
+
+                Usuario usuario;
+
+                // ADMIN pode deletar qualquer um
+                if (perfil == Perfil.ADMIN) {
+                    usuario = dao.buscarPorId(id);
+                } else {
+                    usuario = dao.buscarPorIdEUsuarioSistema(
+                            id, usuarioSistemaId);
+                }
+
+                if (usuario == null) {
+                    resp.sendError(
+                            HttpServletResponse.SC_FORBIDDEN,
+                            "Acesso negado");
+                    return;
+                }
 
                 dao.deletar(id);
 
@@ -45,19 +77,32 @@ public class UsuarioServlet extends HttpServlet {
             }
 
             /* ======================
-               EDITAR
+               EDITAR (SEGURO)
             ====================== */
             if ("editar".equals(acao)) {
 
                 Long id = Long.parseLong(req.getParameter("id"));
 
-                Usuario usuario = dao.buscarPorId(id);
+                Usuario usuario;
+
+                if (perfil == Perfil.ADMIN) {
+                    usuario = dao.buscarPorId(id);
+                } else {
+                    usuario = dao.buscarPorIdEUsuarioSistema(
+                            id, usuarioSistemaId);
+                }
+
+                if (usuario == null) {
+                    resp.sendError(
+                            HttpServletResponse.SC_FORBIDDEN,
+                            "Acesso negado");
+                    return;
+                }
 
                 req.setAttribute("usuario", usuario);
 
                 req.getRequestDispatcher("form.jsp")
-                   .forward(req, resp);
-
+                        .forward(req, resp);
                 return;
             }
 
@@ -66,35 +111,40 @@ public class UsuarioServlet extends HttpServlet {
             ====================== */
 
             String busca = req.getParameter("busca");
-
             List<Usuario> lista;
 
-            if (busca != null && !busca.trim().isEmpty()) {
+            // ===== ADMIN =====
+            if (perfil == Perfil.ADMIN) {
 
-                busca = busca.trim(); // remove espaços extras
+                if (busca != null && !busca.trim().isEmpty()) {
+                    lista = dao.buscarTodosPorNome(busca);
+                } else {
+                    lista = dao.listarTodos();
+                }
 
-                lista = dao.buscarPorNome(busca);
+            }
+            // ===== USUÁRIO NORMAL =====
+            else {
 
-                req.setAttribute("busca", busca);
-
-            } else {
-
-                lista = dao.listar();
+                if (busca != null && !busca.trim().isEmpty()) {
+                    lista = dao.buscarPorNome(busca, usuarioSistemaId);
+                } else {
+                    lista = dao.listarPorUsuarioSistema(usuarioSistemaId);
+                }
             }
 
             req.setAttribute("listaUsuarios", lista);
 
             req.getRequestDispatcher("listar.jsp")
-               .forward(req, resp);
+                    .forward(req, resp);
 
         } catch (Exception e) {
 
             e.printStackTrace();
 
             resp.sendError(
-                HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                "Erro no sistema"
-            );
+                    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Erro no sistema");
         }
     }
 
@@ -109,6 +159,18 @@ public class UsuarioServlet extends HttpServlet {
 
         try {
 
+            HttpSession session = req.getSession(false);
+
+            if (session == null) {
+                resp.sendRedirect("login.jsp");
+                return;
+            }
+
+            UsuarioSistema usuarioLogado =
+                    (UsuarioSistema) session.getAttribute("usuarioLogado");
+
+            Perfil perfil = usuarioLogado.getPerfil();
+
             Usuario usuario = new Usuario();
 
             String id = req.getParameter("id");
@@ -118,18 +180,34 @@ public class UsuarioServlet extends HttpServlet {
             }
 
             usuario.setNome(req.getParameter("nome"));
-
-            usuario.setCpf(req.getParameter("cpf")
-            );
-
+            usuario.setCpf(req.getParameter("cpf"));
             usuario.setParticipou(
-                req.getParameter("participou") != null
-            );
-
+                    req.getParameter("participou") != null);
             usuario.setObservacao(req.getParameter("obs"));
 
-            // Atualiza ou salva
+            usuario.setUsuarioSistemaId(usuarioLogado.getId());
+
+            // ===============================
+            // UPDATE SEGURO
+            // ===============================
             if (usuario.getId() != null) {
+
+                Usuario existente;
+
+                if (perfil == Perfil.ADMIN) {
+                    existente = dao.buscarPorId(usuario.getId());
+                } else {
+                    existente = dao.buscarPorIdEUsuarioSistema(
+                            usuario.getId(),
+                            usuarioLogado.getId());
+                }
+
+                if (existente == null) {
+                    resp.sendError(
+                            HttpServletResponse.SC_FORBIDDEN,
+                            "Acesso negado");
+                    return;
+                }
 
                 dao.atualizar(usuario);
 
@@ -145,9 +223,8 @@ public class UsuarioServlet extends HttpServlet {
             e.printStackTrace();
 
             resp.sendError(
-                HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                "Erro ao salvar usuário"
-            );
+                    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Erro ao salvar usuário");
         }
     }
 }
