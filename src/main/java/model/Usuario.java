@@ -6,6 +6,7 @@ public class Usuario {
 	private String cpf;
 	private boolean participou;
 	private String observacao;
+	private Long usuarioSistemaId;
 	
 	public Long getId() {
 		return id;
@@ -36,6 +37,12 @@ public class Usuario {
 	}
 	public void setObservacao(String observacao) {
 		this.observacao = observacao;
+	}
+	public Long getUsuarioSistemaId() {
+		return usuarioSistemaId;
+	}
+	public void setUsuarioSistemaId(Long usuarioSistemaId) {
+		this.usuarioSistemaId = usuarioSistemaId;
 	}
 
 }
