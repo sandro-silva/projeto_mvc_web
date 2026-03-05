@@ -1,6 +1,8 @@
 package controller;
 
 import dao.UsuarioDAO;
+import model.UsuarioSistema;
+import model.Perfil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,9 +23,28 @@ public class DashboardServlet extends HttpServlet {
 
         try {
 
-            int totalUsuarios = dao.contarUsuarios();
+            HttpSession session = req.getSession(false);
 
-            // Envia para o JSP
+            if (session == null) {
+                resp.sendRedirect("login.jsp");
+                return;
+            }
+
+            UsuarioSistema usuarioLogado =
+                    (UsuarioSistema) session.getAttribute("usuarioLogado");
+
+            int totalUsuarios;
+
+            // ⭐ ADMIN vê todos
+            if (usuarioLogado.getPerfil() == Perfil.ADMIN) {
+                totalUsuarios = dao.contarTodosUsuarios();
+            }
+            // ⭐ usuário comum vê apenas os dele
+            else {
+                totalUsuarios =
+                        dao.contarUsuarios(usuarioLogado.getId());
+            }
+
             req.setAttribute("totalUsuarios", totalUsuarios);
 
             req.getRequestDispatcher("index.jsp")
@@ -40,4 +61,3 @@ public class DashboardServlet extends HttpServlet {
         }
     }
 }
-
