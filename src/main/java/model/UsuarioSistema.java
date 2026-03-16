@@ -5,7 +5,7 @@ public class UsuarioSistema {
     private Long id;
     private String login;
     private String senha;
-    private Perfil perfil;
+    private int perfilId;
 
     public Long getId() {
         return id;
@@ -31,11 +31,12 @@ public class UsuarioSistema {
         this.senha = senha;
     }
 
-    public Perfil getPerfil() {
-        return perfil;
-    }
+	public int getPerfilId() {
+		return perfilId;
+	}
 
-    public void setPerfil(Perfil perfil) {
-        this.perfil = perfil;
-    }
+	public void setPerfilId(int perfilId) {
+		this.perfilId = perfilId;
+	}
+    
 }
